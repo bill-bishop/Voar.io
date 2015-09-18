@@ -129,9 +129,9 @@ window.onload = function () {
 
 
     function create() {
-
+        game.stage.disableVisibilityChange = true;
         game.world.setBounds(0, 0, 10000, 10000);
-        background = game.add.tileSprite(0, 0, 500, 500, 'stars');
+        //background = game.add.tileSprite(0, 0, 500, 500, 'stars');
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0.8;
@@ -306,10 +306,10 @@ window.onload = function () {
         fixCamera(player.body || earth.body, earth.body);
         game.world.scale.set(Number($('#camera-scale').value));
 
-        if(player.alive) {
+     /*   if(player.alive) {
             background.tilePosition.x = player.body.x;
             background.tilePosition.y = player.body.y;
-        }
+        }*/
 
         if (!adjusting && game.input.activePointer.isDown) {
             if (!player.alive) {
