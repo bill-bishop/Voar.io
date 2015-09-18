@@ -1,0 +1,31 @@
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#blorbit {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#debug {
+    color: white;
+    font-family: "Courier New", serif;
+    position: absolute;
+    display: inline-block;
+    right: 0;
+    text-align: right;
+
+    display: none;
+}
+
+#debug input, #debug button {
+    margin: 5px;
+}
+
+#debug label {
+    cursor: pointer;
+}
