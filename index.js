@@ -15,15 +15,43 @@ app.get('/', function (req, res) {
 });
 
 
-io.on('connection', function (socket) {
-    console.log('a user connected');
 
+var shipMap = {};
+
+io.on('connection', function (socket) {
+    for(var id in shipMap) {
+        socket.emit('ship', shipMap[id]);
+    }
     socket.on('thrust', function (ship) {
-        console.log('thrust: ' + ship);
-        io.emit('thrust', ship);
+        socket.broadcast.emit('thrust', ship);
     });
+
+    socket.on('ship', function (options) {
+        shipMap[options.shipId] = options;
+        socket.broadcast.emit('ship', options);
+
+        socket.on('disconnect', function () {
+            killShip(options);
+        });
+
+        console.log('living ships:', Object.getOwnPropertyNames(shipMap));
+    });
+
+    socket.on('update', function (options) {
+        if(shipMap[options.shipId])
+            shipMap[options.shipId] = options;
+    });
+
+    socket.on('kill', killShip);
+
+    function killShip (options) {
+        delete shipMap[options.shipId];
+        socket.broadcast.emit('kill', options);
+
+        console.log('living ships:', Object.getOwnPropertyNames(shipMap));
+    }
 });
 
 http.listen(port, function () {
-    console.log('listening on *:' + port);
+    console.log('listening on port ' + port);
 });

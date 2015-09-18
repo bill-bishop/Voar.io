@@ -25,6 +25,8 @@
             display: inline-block;
             right: 0;
             text-align: right;
+
+            display: none;
         }
 
         #debug input, #debug button {
@@ -49,10 +51,6 @@
 <div id="blorbit">
 </div>
 <script type="text/javascript">
-var socket = io();
-socket.on('thrust', function (msg) {
-    console.log('test', msg);
-});
 var loops = [];
 
 document.getElementById('reset-button').addEventListener('click', function (e) {
@@ -66,7 +64,7 @@ window.onload = function () {
 
     var earth, moon, player, ships, planets, shipCollisionGroup, planetCollisionGroup;
     var initX, initY, initVelX = 100, initVelY = -500, initOffset = 370;
-    var cursors, background, forceType, scale = {factor: 0.5};
+    var socket, cursors, background, forceType, scale = {factor: 0.5}, shipMap = {};
 
     var debug = {};
     var $ = function (selector) {
@@ -144,9 +142,9 @@ window.onload = function () {
         planetCollisionGroup = game.physics.p2.createCollisionGroup();
 
         earth = planets.create(0, 0, 'earth');
-        moon = planets.create(0, 0, 'earth');
+        moon = planets.create(0, 0, '');
 
-        game.physics.p2.enable([moon, earth], true);
+        game.physics.p2.enable([moon, earth]);
 
         earth.body.x = game.world.centerX;
         earth.body.y = game.world.centerY;
@@ -170,9 +168,9 @@ window.onload = function () {
 //            earth.body.velocity.y = 0;
 
         earth.body.setCircle(100 * earthScale);
-        moon.body.setCircle(100 * moonScale);
+        //moon.body.setCircle(100 * moonScale);
 
-        player = Ship(null, null, initVelX, initVelY);
+        player = {};
 
         earth.body.setCollisionGroup(planetCollisionGroup);
         moon.body.setCollisionGroup(planetCollisionGroup);
@@ -184,13 +182,47 @@ window.onload = function () {
         cursors = game.input.keyboard.createCursorKeys();
 
         fixCamera(earth.body);
+
+
+        socket = io();
+        //socket.emit('ship', player.getOptions());
+        socket.on('thrust', function (options) {
+            var ship = shipMap[options.shipId];
+            ship.body.x = options.x;
+            ship.body.y = options.y;
+            ship.body.velocity.x = options.velocity.x;
+            ship.body.velocity.y = options.velocity.y;
+        });
+        socket.on('ship', function (options) {
+            console.log('creating ship', options);
+            Ship(options);
+        });
+        socket.on('kill', function (options) {
+            var ship = shipMap[options.shipId];
+            console.log('killing ship', ship);
+            ship.kill();
+        });
     }
 
-    socket.on('ship', function () {
-        Ship(null, null, initVelX, initVelY);
-    });
-    function Ship(x, y, velX, velY) {
-        var newShip = ships.create(earth.body.x - (x || initOffset), earth.body.y - (y || 0), 'ship');
+    function Player() {
+        return Ship({
+            x: earth.body.x - initOffset,
+            y: earth.body.y - 0,
+            velocity: {
+                x: initVelX,
+                y: initVelY
+            }
+        });
+    }
+
+    function Ship(options) {
+        var x = options.x, y = options.y,
+                velX = options.velocity.x, velY = options.velocity.y,
+                name = options.playerName || '', id = options.shipId || Math.floor(Math.random() * 99999);
+        var newShip = ships.create(x, y, 'ship');
+        newShip.playerName = name;
+        newShip.shipId = id;
+
         var shipScale = 1;
         newShip.scale.set(shipScale);
         game.physics.p2.enable(newShip);
@@ -201,10 +233,28 @@ window.onload = function () {
         newShip.body.velocity.x = velX;
         newShip.body.velocity.y = velY;
 
-        newShip.body.collides([planetCollisionGroup], function () {
+        newShip.body.collides([shipCollisionGroup, planetCollisionGroup], function () {
             newShip.kill();
+            if (player === newShip) {
+                socket.emit('kill', player.getOptions());
+            }
         }, this);
 
+
+        newShip.getOptions = function () {
+            return {
+                shipId: newShip.shipId,
+                playerName: newShip.playerName,
+                x: newShip.body.x,
+                y: newShip.body.y,
+                velocity: {
+                    x: newShip.body.velocity.x,
+                    y: newShip.body.velocity.y
+                }
+            };
+        };
+
+        shipMap[id] = newShip;
         return newShip;
     }
 
@@ -249,18 +299,22 @@ window.onload = function () {
         //spiral(moon, earth);
         //gravitate(moon, earth);
 
+        if (player.alive)
+            socket.emit('update', player.getOptions());
+
         //orbit(earth, {x: game.world.centerX, y: game.world.centerY});
-        fixCamera(player.body, earth.body);
+        fixCamera(player.body || earth.body, earth.body);
         game.world.scale.set(Number($('#camera-scale').value));
 
-        background.tilePosition.x = player.body.x;
-        background.tilePosition.y = player.body.y;
+        if(player.alive) {
+            background.tilePosition.x = player.body.x;
+            background.tilePosition.y = player.body.y;
+        }
 
         if (!adjusting && game.input.activePointer.isDown) {
             if (!player.alive) {
-                player.reset(earth.body.x - initOffset, earth.body.y);
-                player.body.velocity.x = initVelX;
-                player.body.velocity.y = initVelY;
+                player = Player();
+                socket.emit('ship', player.getOptions());
             }
             else {
                 thrust(player);
@@ -283,7 +337,8 @@ window.onload = function () {
 
 
     var period = 0;
-    function spiral (satellite, target) {
+
+    function spiral(satellite, target) {
         satellite = satellite.body || satellite;
         target = target.body || target;
 
@@ -303,7 +358,7 @@ window.onload = function () {
         ship.body.velocity.x += adjustment.x;
         ship.body.velocity.y += adjustment.y;
 
-        socket.emit('thrust', { x: ship.body.velocity.x, y: ship.body.velocity.y });
+        socket.emit('thrust', ship.getOptions());
     }
 
     function sqr(n) {
@@ -356,7 +411,7 @@ window.onload = function () {
             y: (obj2.body.y - obj1.body.y) * force
         };
 
-        switch(forceType) {
+        switch (forceType) {
             case 0:
                 obj1.body.force.x = gravity.x;
                 obj1.body.force.y = gravity.y;
