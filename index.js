@@ -45,10 +45,10 @@ io.on('connection', function (socket) {
     socket.on('kill', killShip);
 
     function killShip (options) {
-        delete shipMap[options.shipId];
-        socket.broadcast.emit('kill', options);
-
-        console.log('living ships:', Object.getOwnPropertyNames(shipMap));
+        if(shipMap[options.shipId]) {
+            delete shipMap[options.shipId];
+            socket.broadcast.emit('kill', options);
+        }
     }
 });
 

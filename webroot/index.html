@@ -52,6 +52,8 @@
 </div>
 <script type="text/javascript">
 var loops = [];
+var playerName = localStorage.getItem('playerName') || prompt('Player Name');
+localStorage.setItem('playerName', playerName);
 
 document.getElementById('reset-button').addEventListener('click', function (e) {
     window.destroyGame();
@@ -206,6 +208,7 @@ window.onload = function () {
 
     function Player() {
         return Ship({
+            playerName: playerName,
             x: earth.body.x - initOffset,
             y: earth.body.y - 0,
             velocity: {
@@ -221,6 +224,8 @@ window.onload = function () {
                 name = options.playerName || '', id = options.shipId || Math.floor(Math.random() * 99999);
         var newShip = ships.create(x, y, 'ship');
         newShip.playerName = name;
+        newShip.text = game.add.text(game.world.centerX - 200, game.world.centerY,
+                name, { font: '25px Arial', fill: '#FFF'});
         newShip.shipId = id;
 
         var shipScale = 1;
@@ -237,7 +242,9 @@ window.onload = function () {
             newShip.kill();
             if (player === newShip) {
                 socket.emit('kill', player.getOptions());
+                //socket.emit('kill', body.sprite.getOptions());
             }
+            game.world.remove(newShip.text);
         }, this);
 
 
@@ -301,6 +308,13 @@ window.onload = function () {
 
         if (player.alive)
             socket.emit('update', player.getOptions());
+
+        ships.forEach(function (ship) {
+            if(ship.alive) {
+                ship.text.x = ship.body.x - ship.text.width / 2;
+                ship.text.y = ship.body.y + ship.height;
+            }
+        });
 
         //orbit(earth, {x: game.world.centerX, y: game.world.centerY});
         fixCamera(player.body || earth.body, earth.body);
@@ -429,7 +443,6 @@ window.onload = function () {
     }
 
     function render() {
-
     }
 };
 
