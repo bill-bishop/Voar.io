@@ -6,7 +6,9 @@ https://blorbit.herokuapp.com/
 
 
 To run locally, install via npm:
-  npm install
+  
+> npm install
   
 And start the app:
-  npm start
+
+> npm start
