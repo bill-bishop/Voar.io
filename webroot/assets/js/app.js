@@ -136,13 +136,18 @@ window.onload = function () {
 
         socket = io();
         //socket.emit('ship', player.getOptions());
-        socket.on('thrust', function (options) {
+        function updateShip (options) {
+            if(options.forEach) return options.forEach(updateShip);
+
             var ship = shipMap[options.shipId];
+            if(ship === player) return;
             ship.body.x = options.x;
             ship.body.y = options.y;
             ship.body.velocity.x = options.velocity.x;
             ship.body.velocity.y = options.velocity.y;
-        });
+        }
+        socket.on('thrust', updateShip);
+        socket.on('update', updateShip);
         socket.on('ship', function (options) {
             console.log('creating ship', options);
             Ship(options);

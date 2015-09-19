@@ -42,6 +42,10 @@ io.on('connection', function (socket) {
             shipMap[options.shipId] = options;
     });
 
+    setInterval(function () {
+        io.emit('update', shipMap);
+    }, 1000);
+
     socket.on('kill', killShip);
 
     function killShip (options) {
