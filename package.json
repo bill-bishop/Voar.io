@@ -20,5 +20,14 @@
     "game"
   ],
   "author": "William McMillian",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/william-mcmillian/Voar.io.git"
+  },
+  "bugs": {
+    "url": "https://github.com/william-mcmillian/Voar.io/issues"
+  },
+  "homepage": "https://github.com/william-mcmillian/Voar.io"
 }
