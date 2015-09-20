@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Blorbit</title>
+    <script src="../webroot/assets/lib/socket.io-1.2.0.js"></script>
+    <script src="../webroot/assets/lib/phaser.min.js"></script>
+    <link rel="stylesheet" href="../webroot/assets/css/style.css" />
+</head>
+<body>
+    <div id="debug">
+        Earth mass <input type="text" id="earth-mass" value="597200000000"/><br>
+        x in (G*m1*m2 / r^x)<input type="text" id="distance-power" value="1"/><br>
+        Camera scale <input type="text" id="camera-scale" value="0.2"/><br>
+        <label>Gravity sets Force <input type="radio" name="force-type" value="0"></label><br>
+        <label>Gravity increments Force <input type="radio" name="force-type" value="1" checked="checked"></label><br>
+        <label>Gravity increments Velocity <input type="radio" name="force-type" value="2"></label><br>
+        <button id="reset-button">Orbit test</button>
+    </div>
+    <div id="blorbit"></div>
+    <script src="blorbit.js"></script>
+</body>
+</html>
