@@ -7,6 +7,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 5000;
+var gameEvents = require('./game/game-events');
 
 app.use(express.static(__dirname + '/webroot'));
 
@@ -19,6 +20,8 @@ app.get('/', function (req, res) {
 var shipMap = {};
 
 io.on('connection', function (socket) {
+    console.log('player connected');
+
     for(var id in shipMap) {
         socket.emit('ship', shipMap[id]);
     }
@@ -33,8 +36,6 @@ io.on('connection', function (socket) {
         socket.on('disconnect', function () {
             killShip(options);
         });
-
-        console.log('living ships:', Object.getOwnPropertyNames(shipMap));
     });
 
     socket.on('update', function (options) {

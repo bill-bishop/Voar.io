@@ -1,33 +1,33 @@
 {
-  "name": "Blorbit",
-  "version": "1.0.0",
-  "description": "Orbit game",
-  "main": "index.js",
-  "dependencies": {
-    "express": "^4.13.3",
-    "node-gyp": "^3.0.3",
-    "phantom": "^0.7.2",
-    "phaser": "^2.4.3",
-    "socket.io": "^1.3.6"
-  },
-  "scripts": {
-    "start": "node blorbit",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "orbit",
-    "space",
-    "game"
-  ],
-  "author": "William McMillian",
-  "license": "ISC",
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/william-mcmillian/Voar.io.git"
-  },
-  "bugs": {
-    "url": "https://github.com/william-mcmillian/Voar.io/issues"
-  },
-  "homepage": "https://github.com/william-mcmillian/Voar.io"
+    "name": "Blorbit",
+    "version": "1.0.0",
+    "description": "Orbit game",
+    "main": "index.js",
+    "dependencies": {
+        "express": "^4.13.3",
+        "node-gyp": "^3.0.3",
+        "phantom": "^0.7.2",
+        "phaser": "^2.4.3",
+        "socket.io": "^1.3.6"
+    },
+    "scripts": {
+        "start": "node index",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "orbit",
+        "space",
+        "game"
+    ],
+    "author": "William McMillian",
+    "license": "ISC",
+    "devDependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/william-mcmillian/Voar.io.git"
+    },
+    "bugs": {
+        "url": "https://github.com/william-mcmillian/Voar.io/issues"
+    },
+    "homepage": "https://github.com/william-mcmillian/Voar.io"
 }
