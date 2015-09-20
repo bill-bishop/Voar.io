@@ -41,7 +41,7 @@ gameEvents.thrust = function (options) {
         options);
 };
 
-phantom.create(function (err, ph) { //create fails when run via npm script...
+phantom.create(function (err, ph) {
     ph.createPage(function (err, page) {
         if(err) return console.log(err);
 
