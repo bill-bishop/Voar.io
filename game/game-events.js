@@ -51,7 +51,7 @@ phantom.create(function (ph) { //create fails when run via npm script...
     ph.createPage(function (page) {
         gameEvents.page = page;
 
-        page.open("game/blorbit.html", function (status) {
+        page.open(__dirname + "/blorbit.html", function (status) {
             console.log("PhantomJS Connected: ", status);
         });
 
