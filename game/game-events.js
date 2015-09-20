@@ -1,7 +1,7 @@
 /**
  * Created by williambishop on 9/19/15.
  */
-var phantom = require('phantom');
+var phantom = require('node-phantom');
 
 // Bridge for events between PhantomJS instance and node
 function EventHandler() {
@@ -19,14 +19,8 @@ function EventHandler() {
 }
 
 function parseEvent(msg) {
-    try {
-        msg = JSON.parse(msg);
-        if (!msg.eventType) return;
-        gameEvents.broadcast(msg.eventType, msg.data);
-    }
-    catch (e) {
-        // ignore msgs that aren't JSON strings
-    }
+    if (!msg.eventType) return;
+    gameEvents.broadcast(msg.eventType, msg.data);
 }
 
 var gameEvents = new EventHandler();
@@ -47,15 +41,15 @@ gameEvents.thrust = function (options) {
         options);
 };
 
-phantom.create(function (ph) { //create fails when run via npm script...
-    ph.createPage(function (page) {
-        gameEvents.page = page;
+phantom.create(function (err, ph) { //create fails when run via npm script...
+    ph.createPage(function (err, page) {
+        if(err) return console.log(err);
 
-        page.open(__dirname + "/blorbit.html", function (status) {
+        gameEvents.page = page;
+        page.onCallback = parseEvent;
+        page.open(__dirname + "/blorbit.html", function (err, status) {
             console.log("PhantomJS Connected: ", status);
         });
-
-        page.onConsoleMessage(parseEvent);
     });
 });
 

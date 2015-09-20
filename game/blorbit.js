@@ -1,9 +1,9 @@
 // Bridge between PhantomJS instance and Node
 function fireEvent (type, data) {
-    console.log(JSON.stringify({
+    window.callPhantom({
         eventType: type,
         data: data
-    }));
+    });
 }
 
 function spawn (options) {
