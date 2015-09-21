@@ -1,5 +1,5 @@
 # Voar.io
-Orbit game written in Phaser.io
+Orbit game written in Phaser.io and Socket.io
 
 Deployed via Heroku here:
 https://blorbit.herokuapp.com/
