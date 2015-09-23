@@ -5,13 +5,10 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.13.3",
-    "node-gyp": "^3.0.3",
-    "node-phantom": "https://github.com/amol9/node-phantom.git",
-    "phaser": "^2.4.3",
     "socket.io": "^1.3.6"
   },
   "scripts": {
-    "start": "node index",
+    "start": "node src/index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
