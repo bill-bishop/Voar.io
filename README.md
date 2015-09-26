@@ -12,6 +12,3 @@ To run locally, install via npm:
 And start the app:
 
 > npm start
-
-
-PhantomJS must be installed on your machine and available on the PATH.
