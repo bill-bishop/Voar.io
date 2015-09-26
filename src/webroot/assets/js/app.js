@@ -14,7 +14,7 @@ window.onload = function () {
 
     var earth, moon, player, ships, planets, shipCollisionGroup, planetCollisionGroup;
     var initX, initY, initVelX = 100, initVelY = -500, initOffset = 370;
-    var socket, cursors, background, forceType, scale = {factor: 0.5}, shipMap = {};
+    var socket, cursors, background, forceType, scale = {factor: 0.5}, shipMap = {}, playerId;
 
     var debug = {};
     var $ = function (selector) {
@@ -84,7 +84,6 @@ window.onload = function () {
         //background = game.add.tileSprite(0, 0, 500, 500, 'stars');
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true);
-        game.physics.p2.restitution = 0.8;
 
         ships = game.add.group();
         planets = game.add.group();
@@ -135,27 +134,10 @@ window.onload = function () {
 
 
         socket = io();
-        //socket.emit('ship', player.getOptions());
-        function updateShip (options) {
-            if(options.forEach) return options.forEach(updateShip);
-
-            var ship = shipMap[options.shipId];
-            if(ship === player) return;
-            ship.body.x = options.x;
-            ship.body.y = options.y;
-            ship.body.velocity.x = options.velocity.x;
-            ship.body.velocity.y = options.velocity.y;
-        }
-        socket.on('thrust', updateShip);
-        socket.on('update', updateShip);
-        socket.on('ship', function (options) {
-            console.log('creating ship', options);
-            Ship(options);
-        });
-        socket.on('kill', function (options) {
-            var ship = shipMap[options.shipId];
-            console.log('killing ship', ship);
-            ship.kill();
+        socket.emit('newPlayer', 'testName');
+        socket.on('playerId', function (id) {
+            playerId = id;
+            console.log('player id:', id);
         });
     }
 
