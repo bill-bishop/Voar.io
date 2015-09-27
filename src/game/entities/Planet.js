@@ -1,19 +1,13 @@
-function Planet (options) {
-    var p2 = options.p2;
+var physics = require('../physics');
 
-    this.world = options.world;
-
-    this.body = new p2.Body({
-        mass: options.mass,
-        velocity: [0, 0],
-        position: [0, 0]
-    });
-
-    this.body.addShape(new p2.Circle({
-        radius: 50
-    }));
-
-    this.world.addBody(this.body);
+Planet.extends(physics.Body);
+function Planet(options) {
+    this.super(options);
 }
 
+Planet.EARTH = new Planet({
+    mass: Math.pow(5.6, 24),
+    position: new physics.Position(0, 0),
+    velocity: new physics.Velocity(0, 0)
+});
 module.exports = Planet;
