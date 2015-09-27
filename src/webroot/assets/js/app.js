@@ -1,4 +1,3 @@
-
 var loops = [];
 var playerName = localStorage.getItem('playerName') || prompt('Player Name');
 localStorage.setItem('playerName', playerName);
@@ -98,7 +97,7 @@ function update() {
     //gravitate(moon, earth);
 
     ships.forEach(function (ship) {
-        if(ship.alive) {
+        if (ship.alive) {
             ship.text.x = ship.body.x - ship.text.width / 2;
             ship.text.y = ship.body.y + ship.height;
         }
@@ -146,7 +145,7 @@ function Ship(options) {
     var newShip = ships.create(x, y, 'ship');
     newShip.playerName = name;
     newShip.text = game.add.text(game.world.centerX - 200, game.world.centerY,
-        name, { font: '25px Arial', fill: '#FFF'});
+        name, {font: '25px Arial', fill: '#FFF'});
     newShip.shipId = id;
 
     var shipScale = 1;
@@ -220,7 +219,7 @@ function align(obj) {
     }
 }
 
-function sqr (n) {
+function sqr(n) {
     return n * n;
 }
 
@@ -246,36 +245,6 @@ function thrust(ship) {
 
     socket.emit('thrust', ship.getOptions());
 }
-
-
-// gravity calculations
-
-function gravitationalForce(mass, radius) {
-    var G = Math.pow(6.67, -11);
-    return G * mass / Math.pow(radius, 2);
-}
-
-function Position (radial, tangential) {
-    this.radial = radial;
-    this.tangential = tangential;
-}
-
-function gravitate(a, b, dt) {
-    var position = a.position;
-    var velocity = a.velocity;
-    var dr = velocity.radial * dt;
-    var dtheta = velocity.tangential * dt;
-    var force = gravitationalForce(b.mass, position.radial);
-
-    var radialVelocityIncrease = position.radial + (.5 * dr * Math.pow(dtheta, 2) - force * Math.pow(dt, 2));
-    var tangentialVelocityIncrease = 0 - 2 * dr * dtheta / (position.radial + .5 * dr);
-
-    position.radial += dr;
-    position.tangential += dtheta;
-    velocity.radial += radialVelocityIncrease;
-    velocity.tangential += tangentialVelocityIncrease;
-}
-
 
 // debug
 
