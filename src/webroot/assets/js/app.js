@@ -5,7 +5,7 @@ localStorage.setItem('playerName', playerName);
 
 var earth, moon, player, ships, planets, shipCollisionGroup, planetCollisionGroup;
 var initX, initY, initVelX = 100, initVelY = -500, initOffset = 370;
-var socket, cursors, background, forceType, scale = {factor: 0.5}, shipMap = {}, playerId;
+var socket, cursors, background, forceType, scale = {factor: 0.5}, shipMap = {}, playerId, adjusting, scaling;
 
 var debug = {};
 var $ = function (selector) {
@@ -91,14 +91,11 @@ function create() {
 }
 
 function update() {
-    gravitate(ships, earth);
+    //gravitate(ships, earth);
     //gravitate(ships, moon);
     align(ships);
     //spiral(moon, earth);
     //gravitate(moon, earth);
-
-    if (player.alive)
-        socket.emit('update', player.getOptions());
 
     ships.forEach(function (ship) {
         if(ship.alive) {
@@ -111,15 +108,9 @@ function update() {
     fixCamera(player.body || earth.body, earth.body);
     game.world.scale.set(.4);
 
-    /*   if(player.alive) {
-     background.tilePosition.x = player.body.x;
-     background.tilePosition.y = player.body.y;
-     }*/
-
     if (!adjusting && game.input.activePointer.isDown) {
         if (!player.alive) {
             player = Player();
-            socket.emit('ship', player.getOptions());
         }
         else {
             thrust(player);
@@ -229,6 +220,17 @@ function align(obj) {
     }
 }
 
+function sqr (n) {
+    return n * n;
+}
+
+function interval(x, n) {
+    return Math.floor(x / n) * n;
+}
+
+function direction(body) {
+    return Math.atan2(body.velocity.y, body.velocity.x);
+}
 
 // controls
 
