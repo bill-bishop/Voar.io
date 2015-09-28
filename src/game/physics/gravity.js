@@ -2,24 +2,36 @@ var Velocity = require('./Velocity');
 var Position = require('./Position');
 
 function gravitationalForce(mass, radius) {
-    var G = Math.pow(6.67, -11);
+    // mass should be kg, radius should be m
+    var G = 6.67e-11;
     return G * mass / Math.pow(radius, 2);
 }
 
-function orbitStep(a, b, dt) {
-    var position = a.position;
-    var velocity = a.velocity;
-    var dr = velocity.r * dt;
-    var dtheta = velocity.theta * dt;
-    var force = gravitationalForce(b.mass, position.r);
+function orbitStep(a, b, dt, steps) {
+    if(a.forEach) {
+        a.forEach(function (body) {
+            orbitStep(body, b, dt, steps);
+        });
+        return;
+    }
+    steps = steps || 1;
+    for(var i = 0; i < steps; i++) {
+        var rn = a.position.r;
+        var thetan = a.position.theta;
+        var dr = a.velocity.r;
+        var dtheta = a.velocity.theta;
+        var force = gravitationalForce(b.mass, rn);
 
-    var radialVelocityIncrease = position.r + (.5 * dr * Math.pow(dtheta, 2) - force * Math.pow(dt, 2));
-    var tangentialVelocityIncrease = 0 - 2 * dr * dtheta / (position.r + .5 * dr);
+        var step = {
+            rn: rn + dr,
+            thetan: thetan + dtheta,
+            dr: dr + ((rn + .5 * dr) * Math.pow(dtheta, 2) - force * Math.pow(dt, 2)),
+            dtheta: dtheta - 2 * dr * dtheta / (rn + .5 * dr)
+        };
 
-    return {
-        position: new Position(dr, dtheta),
-        velocity: new Velocity(radialVelocityIncrease, tangentialVelocityIncrease)
-    };
+        a.position.set(step.rn, step.thetan);
+        a.velocity.set(step.dr, step.dtheta);
+    }
 }
 
 module.exports = {

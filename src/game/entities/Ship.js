@@ -1,7 +1,5 @@
 var physics = require('../physics');
 
-Ship.extends(physics.Body);
-
 function Ship (options) {
     this.super(options);
 
@@ -23,5 +21,8 @@ Ship.prototype = {
         };
     }
 };
+
+
+Ship.extends(physics.Body);
 
 module.exports = Ship;
