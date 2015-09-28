@@ -6,10 +6,10 @@ var shipMap = {};
 
 
 // game options
-var dt = 25;
-var rkm = 40000; // initial distance from earth in km
-var vrkm = -1.0; // initial radial velocity in km
-var vthetakm = 2.0; // initial tangential velocity in km/s
+var dt = 5;
+var rkm = 42000; // initial distance from earth in km
+var vrkm = 0.0; // initial radial velocity in km
+var vthetakm = 3.1; // initial tangential velocity in km/s
 var earth = Planet.EARTH;
 
 var entities = [];

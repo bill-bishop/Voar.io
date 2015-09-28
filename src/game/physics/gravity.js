@@ -3,8 +3,8 @@ var Position = require('./Position');
 
 function gravitationalForce(mass, radius) {
     // mass should be kg, radius should be m
-    var G = 6.67e-11;
-    return G * mass / Math.pow(radius, 2);
+    var G = 6.67e-15;
+    return G * mass / Math.pow(radius, 1.5);
 }
 
 function orbitStep(a, b, dt, steps) {
@@ -19,7 +19,7 @@ function orbitStep(a, b, dt, steps) {
         var rn = a.position.r;
         var thetan = a.position.theta;
         var dr = a.velocity.r;
-        var dtheta = a.velocity.theta;
+        var dtheta = a.velocity.theta - .000000001;
         var force = gravitationalForce(b.mass, rn);
 
         var step = {
